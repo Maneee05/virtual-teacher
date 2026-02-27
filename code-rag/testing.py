@@ -4,8 +4,8 @@ rag = LearningRAGPipeline()
 
 # Ingest student materials
 file_paths = [
-    "C://Users//manee//Downloads//CSIT_III-II_CRYPTOGRAPHY AND NETWORK SECURITY DIGITAL NOTES (1).pdf",
-    "C://Users//manee//Pictures//Screenshots//Screenshot 2026-02-10 142104.png"
+    "somefile.pdf",
+    "someimage.png"
 ]
 
 rag.ingest_curriculum(file_paths)
