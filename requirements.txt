@@ -1,0 +1,7 @@
+qdrant-client
+sentence-transformers
+langchain
+networkx
+python-dotenv
+openai
+Pillow
