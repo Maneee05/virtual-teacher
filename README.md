@@ -186,7 +186,9 @@ Visual Aids:
 ## 👩‍💻 Author
 
 Maneesha Manohar
+
 B.Tech CSE Student | AI/ML Enthusiast
+
 Linkedin - www.linkedin.com/in/maneesha-manohar-607819249
 
 ---
