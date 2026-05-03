@@ -81,10 +81,13 @@ Structured Lesson Plan Output
 ```
 virtual-teacher/
 │
+├── data/
+│    └── .env               # API keys
 ├── rag-pipeline/
 │   └── src.py             # Main RAG pipeline
 │   └── testing.py         # Implementation scripts
 ├── .gitignore
+├── requirements.txt
 └── README.md
 ```
 
