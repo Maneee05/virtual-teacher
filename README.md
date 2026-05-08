@@ -1,91 +1,74 @@
-# 🎓 Virtual Teacher – Multimodal RAG Learning System
+# 🔍 RAG Pipeline — Virtual Teacher (Collaborative Project)
 
-An intelligent **Retrieval-Augmented Generation (RAG)** based virtual teacher that generates structured lesson plans from curriculum materials using semantic search, knowledge graphs, and LLMs.
-
----
-
-## 🚀 Overview
-
-Virtual Teacher is a **mini-project focused on AI-powered education**, designed to simulate a personalized teaching assistant.
-
-The system ingests learning materials (PDFs, images), builds a **semantic + graph-based knowledge base**, and generates **context-aware lesson plans** for students using LLMs.
+> **Note:** This repository contains the **RAG pipeline component** I built as part of a collaborative academic mini-project called Virtual Teacher. The broader application (UI, avatar integration, full system) is being developed separately by teammates. This repo covers my contribution: the retrieval and generation pipeline.
 
 ---
 
-## ✨ Key Features
+## 🛠️ What I Built
 
-* 📚 **Multimodal Input Support**
+A **Retrieval-Augmented Generation (RAG) pipeline** that:
 
-  * PDF parsing (PyMuPDF)
-  * Image handling (extensible for OCR)
+1. Ingests curriculum documents (PDFs)
+2. Chunks and embeds the content using SentenceTransformers
+3. Stores vectors in a **Qdrant** vector database
+4. Builds a **NetworkX knowledge graph** to map topic relationships
+5. Performs **hybrid retrieval** — combining semantic vector search with graph-based topic linking
+6. Passes retrieved context to **Gemini LLM** to generate structured lesson plans
 
-* 🧠 **RAG Pipeline**
-
-  * Text chunking (LangChain)
-  * Embeddings (Sentence Transformers)
-  * Vector storage (Qdrant)
-
-* 🔎 **Hybrid Retrieval**
-
-  * Semantic search (vector similarity)
-  * Knowledge graph-based topic linking (NetworkX)
-
-* 🧩 **Knowledge Graph Construction**
-
-  * Automatic topic extraction
-  * Relationship mapping between concepts
-
-* 🤖 **LLM Integration**
-
-  * Gemini (via OpenAI-compatible API)
-  * Generates structured lesson plans:
-
-    * Learning objectives
-    * Explanation
-    * Visual aids
+The hybrid retrieval approach (vector + graph) is the key design decision — it reduces the context-gap problem common in naive RAG, where a vector match alone can miss conceptually related topics.
 
 ---
 
-## 🏗️ System Architecture
+## 🧱 Pipeline Architecture
 
-```
-User Query
-     ↓
-Hybrid Retriever (Qdrant + Knowledge Graph)
-     ↓
-Relevant Context Retrieval
-     ↓
-LLM (Gemini API)
-     ↓
-Structured Lesson Plan Output
+```text
+Curriculum PDF
+      ↓
+PDF Parsing  (PyMuPDF)
+      ↓
+Text Chunking  (LangChain)
+      ↓
+Embedding Generation  (SentenceTransformers — all-MiniLM-L6-v2)
+      ↓
+   ┌──────────────────────────────────────┐
+   │  Qdrant Vector Store                 │
+   │  NetworkX Knowledge Graph            │
+   └──────────────────────────────────────┘
+            ↓  Hybrid Retrieval
+   Relevant context chunks + related topics
+            ↓
+   Gemini LLM  (via OpenAI-compatible API)
+            ↓
+   Structured Lesson Plan Output
+   (Learning objectives · Explanation · Visual aids)
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## ⚙️ Tech Stack
 
-| Component       | Technology                              |
-| --------------- | --------------------------------------- |
-| Embeddings      | SentenceTransformers (all-MiniLM-L6-v2) |
-| Vector DB       | Qdrant                                  |
-| Text Processing | LangChain                               |
-| Knowledge Graph | NetworkX                                |
-| PDF Processing  | PyMuPDF                                 |
-| LLM             | Gemini (OpenAI-compatible API)          |
-| Language        | Python                                  |
+| Component         | Technology                              |
+|-------------------|-----------------------------------------|
+| Language          | Python                                  |
+| Text Processing   | LangChain                               |
+| Embeddings        | SentenceTransformers (all-MiniLM-L6-v2) |
+| Vector Database   | Qdrant                                  |
+| Knowledge Graph   | NetworkX                                |
+| PDF Parsing       | PyMuPDF                                 |
+| LLM               | Gemini (via OpenAI-compatible API)      |
 
 ---
 
-## 📂 Project Structure
+## 📁 Repository Structure
 
-```
+```text
 virtual-teacher/
 │
 ├── data/
-│    └── .env               # API keys
+│   └── .env                # API keys (not committed)
 ├── rag-pipeline/
-│   └── src.py             # Main RAG pipeline
-│   └── testing.py         # Implementation scripts
+│   ├── src.py              # Core RAG pipeline
+│   └── testing.py          # Pipeline tests and example queries
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -93,117 +76,63 @@ virtual-teacher/
 
 ---
 
-## ⚙️ Setup Instructions
+## 🚀 Setup
 
-### 1. Clone the repository
+### 1. Clone and install
 
 ```bash
 git clone https://github.com/Maneee05/virtual-teacher.git
 cd virtual-teacher
-```
-
-### 2. Install dependencies
-
-```bash
 pip install -r requirements.txt
 ```
 
-### 3. Add environment variables
+### 2. Add your API key
 
-Create a `.env` file:
+Create a `.env` file inside `/data`:
 
-```
+```env
 GEMINI_API_KEY=your_api_key_here
 ```
 
----
-
-## ▶️ Usage
-
-### Run the pipeline
+### 3. Run the pipeline
 
 ```bash
-cd code-rag
+cd rag-pipeline
 python src.py
 ```
 
-### Example Workflow
-
-1. Upload curriculum files (PDF/images)
-2. System processes and builds knowledge base
-3. Enter student query:
-
-```
-"What is TCP/IP?"
-```
-
-4. Output:
-
-* Learning objectives
-* Explanation
-* Suggested visual aids
-
 ---
 
-## 📊 Example Output
+## 📌 Example Output
 
-```
+**Query:** `"What is TCP/IP?"`
+
+```text
 Learning Objectives:
-- Understand TCP/IP layers
-- Learn packet communication basics
+- Understand the TCP/IP communication model
+- Learn how packets are routed across networks
 
 Explanation:
-TCP/IP is a communication model...
+TCP/IP is a layered communication protocol...
 
 Visual Aids:
-- 3D layered network model
+- Layered network model diagram
 - Packet flow animation
 ```
 
 ---
 
-## 🧠 Design Highlights (For Recruiters)
+## 🧠 Design Decisions
 
-* Combines **vector search + graph-based reasoning**
-* Implements **hybrid retrieval for improved relevance**
-* Uses **modular pipeline design** (ingestion → indexing → retrieval → generation)
-* Demonstrates **applied NLP + IR concepts**
-* Easily extensible to:
+**Why hybrid retrieval?**
+Pure vector search retrieves semantically similar chunks but can miss conceptually related topics that aren't lexically similar. Layering a knowledge graph lets the retriever follow topic relationships (e.g. "TCP/IP" → "OSI model" → "network layers") even when the query doesn't mention them explicitly. This improves answer completeness for educational content.
 
-  * Voice-based teaching
-  * Real-time tutoring
-  * 3D avatar integration
-
----
-
-## 🚧 Future Improvements
-
-* Real OCR for images (Tesseract / Vision models)
-* Frontend UI (React / Flutter)
-* 3D avatar integration for teaching
-* Personalized learning paths
-* Fine-tuned LLM for education domain
+**Why Qdrant over FAISS/ChromaDB?**
+Qdrant supports filtered search and scales well without needing to reload the index — more practical for a modular pipeline design where documents are added incrementally.
 
 ---
 
 ## 👩‍💻 Author
 
-Maneesha Manohar
-
-B.Tech CSE Student | AI/ML Enthusiast
-
-Linkedin - www.linkedin.com/in/maneesha-manohar-607819249
-
----
-
-## ⭐ Why This Project Stands Out
-
-This project goes beyond basic chatbots by integrating:
-
-* Retrieval-Augmented Generation
-* Knowledge Graphs
-* Multimodal learning inputs
-
-It reflects strong understanding of **modern AI system design**, not just model usage.
-
----
+**Maneesha Manohar** — B.Tech CSE @ CUSAT  
+[LinkedIn](https://linkedin.com/in/maneesha-manohar-607819249) · [GitHub](https://github.com/Maneee05)
